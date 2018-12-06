@@ -15,6 +15,8 @@ Route::get('/getuser','LoginControllfer@getUser')->name('panda.getuser');
 Route::get('/mahasiswa/daftar_matkul/{nip_mahasiswa}/{klsSemId_mahasiswa}','LoginController@getData')->name('mahasiswa.daftar_matkul');
 Route::get('/mahasiswa/cari_matkul','LoginController@cariMatkul')->name('mahasiswa.cari_matkul');
 
+Route::get('/logout','LoginController@logout')->name('logout');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
@@ -34,7 +36,6 @@ Route::group(['prefix'	=>	'mahasiswa'],function(){
 	Route::get('/','Mahasiswa\DashboardController@index')->name('mahasiswa.home');
 	Route::get('/login','Mahasiswa\AuthMahasiswa\LoginController@showLoginForm')->name('mahasiswa.login');
 	Route::post('/login','Mahasiswa\AuthMahasiswa\LoginController@login')->name('mahasiswa.login.submit');
-	Route::get('/logout','LoginController@logoutMahasiswa')->name('mahasiswa.logout');
 });
 
 // Route Mahasiswa
@@ -42,7 +43,6 @@ Route::group(['prefix'	=>	'dosen'],function(){
 	Route::get('/','Dosen\DashboardController@index')->name('dosen.dashboard');
 	Route::get('/login','Dosen\AuthDosen\LoginController@showLoginForm')->name('dosen.login');
 	Route::post('/login','Dosen\AuthDosen\LoginController@login')->name('dosen.login.submit');
-	Route::get('/logout','LoginController@logoutDosen')->name('dosen.logout');
 });
 
 Route::group(['prefix'	=>	'admin/manajemen_jenis_indikator'],function(){
@@ -112,6 +112,9 @@ Route::group(['prefix'	=>	'admin/laporan'],function(){
 	Route::get('/laporan_evaluasi_per_jenis/carimatkul','Admin\LaporanEvaluasiController@cariMatkul')->name('admin.laporan_per_jenis_cari_jenis');
 
 	Route::get('/cekdata/{nip}/{id_jenis_indikator}','Admin\LaporanEvaluasiController@cekData');
+	Route::get('/ceknip/{nip}','Admin\LaporanEvaluasiController@cekNip');
+	Route::get('/cekprodi/{id_prodi}','Admin\LaporanEvaluasiController@cekProdi');
+	Route::get('/cekfakultas/{id_fakultas}','Admin\LaporanEvaluasiController@cekFakultas');
 
 	Route::get('/per_indikator','Admin\LaporanEvaluasiController@laporanPerIndikator')->name('laporan.per_indikator');
 	Route::get('/per_indikator','Admin\LaporanEvaluasiController@laporanPerIndikator')->name('laporan.per_indikator');
@@ -159,6 +162,12 @@ Route::group(['prefix'	=>	'dosen'],function(){
 	Route::get('/daftar_matkul/hasil_evaluasi_detail/{nip}/{klsSemId}/{id_matkul}/{id_kelas}','dosen\DaftarMatkulController@hasilEvaluasiDetail')->name('dosen.hasil_evaluasi_detail');
 	Route::get('/hasil_evaluasi','dosen\HasilEvaluasiController@hasilEvaluasi')->name('dosen.hasil_evaluasi');
 	Route::get('/hasil_evaluasi_per_jenis','dosen\HasilEvaluasiController@hasilEvaluasiPerJenis')->name('dosen.hasil_evaluasi_per_jenis');
+	Route::get('/cekdata/{id_kelas}/{id_jenis_indikator}','dosen\HasilEvaluasiController@cekData');
+	Route::get('/cekKelas/{id_kelas}','dosen\HasilEvaluasiController@cekKelas');
+	Route::get('/cekmatkul/{id_kelas}','dosen\HasilEvaluasiController@cekMatkul');
+	Route::get('/ceknip/{nip}','dosen\HasilEvaluasiController@cekNip');
+
+	Route::get('/detail_indikator/{id_kelas}','dosen\HasilEvaluasiController@dosenDetailIndikator')->name('dosen.detail_indikator');
 
 	Route::get('/hasil_evaluasi_per_mata_kuliah','dosen\HasilEvaluasiController@hasilEvaluasiPerMataKuliah')->name('dosen.hasil_evaluasi_per_mata_kuliah');
 	Route::post('/api_hasil_evaluasi_per_mata_kuliah','dosen\HasilEvaluasiController@apiHasilEvaluasiPerMataKuliah')->name('dosen.api_hasil_evaluasi_per_mata_kuliah');
@@ -172,3 +181,17 @@ Route::group(['prefix'	=>	'dosen/hasil'],function(){
 	Route::get('/api_saran_mahasiswa','dosen\HasilEvaluasiController@apisaranMahasiswa')->name('dosen.api_saran_mahasiswa');
 });
 //End of route Dosen
+
+Route::group(['prefix'	=> 'prodi'],function(){
+	Route::get('/','pimpinan\PimpinanController@prodi')->name('prodi.dashboard');
+	Route::get('/daftar_dosen/{prodiKode}','pimpinan\PimpinanController@prodiDaftarDosen')->name('prodi.daftar_dosen');
+	Route::get('/laporan_dosen/{nip}/{nm_dosen}','pimpinan\PimpinanController@prodiLaporanDosen')->name('prodi.laporan_dosen');
+});
+
+Route::group(['prefix'	=> 'fakultas'],function(){
+	Route::get('/','pimpinan\PimpinanController@fakultas')->name('fakultas.dashboard');
+	Route::get('/daftar_dosen/{fakKode}','pimpinan\PimpinanController@fakultasDaftarDosen')->name('fakultas.daftar_dosen');
+	Route::get('/laporan_dosen/{nip}/{nm_dosen}/{prodi_dosen}','pimpinan\PimpinanController@fakultasLaporanDosen')->name('fakultas.laporan_dosen');
+	Route::get('get_prodi/{prodiKode}','pimpinan\PimpinanController@getProdi');
+
+});

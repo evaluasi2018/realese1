@@ -96,9 +96,10 @@
 														<tr>
 															<td>{{ $no }}</td>
 															<td>{{ $data->nip }}</td>
-															<td>{{ $data->nip }}</td>
-															<td>{{ $data->id_prodi }}</td>
-															<td>{{ $data->id_fakultas }}</td>
+															<td>{{LaporanEvaluasiController::cekNip($data->nip) }}</td>
+															<td>{{LaporanEvaluasiController::cekProdi($data->id_prodi) }}</td>
+															
+															<td>{{LaporanEvaluasiController::cekFakultas($data->id_fakultas) }}</td>
 															<?php 
 																$id = DB::table('tb_jenis_indikator')
 																	->select('id_jenis_indikator')
@@ -149,9 +150,10 @@
 														<tr>
 															<td>{{ $no }}</td>
 															<td>{{ $data->nip }}</td>
-															<td>{{ $data->nip }}</td>
-															<td>{{ $data->id_prodi }}</td>
-															<td>{{ $data->id_fakultas }}</td>
+															<<td>{{LaporanEvaluasiController::cekNip($data->nip) }}</td>
+															<td>{{LaporanEvaluasiController::cekProdi($data->id_prodi) }}</td>
+															
+															<td>{{LaporanEvaluasiController::cekFakultas($data->id_fakultas) }}</td>
 															<?php 
 																$id = DB::table('tb_jenis_indikator')
 																	->select('id_jenis_indikator')
@@ -171,7 +173,7 @@
 									</table>
 								<?php
 							}
-							elseif (!empty($_GET['fakultas']) && !empty($_GET['prodi']) && empty($_GET['dosen']))
+							elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi'])) && empty($_GET['dosen']))
 							{
 								?>
 									<table id="table-laporan-per-jenis" class="table table-bordered table-striped table-responsive table-hover">
@@ -194,47 +196,38 @@
 											</tr>
 										</thead>
 										<tbody>
-											<?php
-												foreach ($data as $data) {
-												?>
-													<tr>
-														<td>
-															{{ $no }}
-														</td>
-														<td>
-															{{ $data->id_fakultas }}
-														</td>
-														<td>
-															{{ $data->id_prodi }}
-														</td>
-														<td>
-															{{ $data->nm_jenis_indikator }}
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->totalnilai }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->jumlahreview }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->rata }}
-															</label>
-														</td>
-													</tr>	
 											<?php 
-												$no++;
-												}
+												$no =1;
+												foreach($data_prodi as $data)
+												{
+													?>	
+														<tr>
+															<td>{{ $no }}</td>
+															<td>{{ $data->nip }}</td>
+															<td>{{LaporanEvaluasiController::cekNip($data->nip) }}</td>
+															<td>{{LaporanEvaluasiController::cekProdi($data->id_prodi) }}</td>
+															
+															<td>{{LaporanEvaluasiController::cekFakultas($data->id_fakultas) }}</td>
+															<?php 
+																$id = DB::table('tb_jenis_indikator')
+																	->select('id_jenis_indikator')
+																	->get();
+																	foreach ($id as $id) {
+															?>
+																<td>{{LaporanEvaluasiController::cekData($data->nip, $id->id_jenis_indikator) }}</td>
+															<?php 
+																}
+															?>
+														</tr>
+													<?php
+												$no++; 
+												} 
 											?>
 										</tbody>
 									</table>
 								<?php
 							}
-							elseif (!empty($_GET['fakultas']) && !empty($_GET['prodi']) && !empty($_GET['dosen']) && empty($_GET['matkul']))
+							elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi'])) && !empty($_GET['dosen']) && empty($_GET['matkul']))
 							{
 								?>
 									<table id="table-laporan-per-jenis" class="table table-bordered table-striped table-responsive table-hover">
@@ -257,50 +250,38 @@
 											</tr>
 										</thead>
 										<tbody>
-											<?php
-												foreach ($data as $data) {
-												?>
-													<tr>
-														<td>
-															{{ $no }}
-														</td>
-														<td>
-															{{ $data->id_fakultas }}
-														</td>
-														<td>
-															{{ $data->id_prodi }}
-														</td>
-														<td>
-															{{ $data->nip }}
-														</td>
-														<td>
-															{{ $data->nm_jenis_indikator }}
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->totalnilai }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->jumlahreview }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->rata }}
-															</label>
-														</td>
-													</tr>	
 											<?php 
-												$no++;
-												}
+												$no =1;
+												foreach($data_dosen as $data)
+												{
+													?>	
+														<tr>
+															<td>{{ $no }}</td>
+															<td>{{ $data->nip }}</td>
+															<td>{{LaporanEvaluasiController::cekNip($data->nip) }}</td>
+															<td>{{LaporanEvaluasiController::cekProdi($data->id_prodi) }}</td>
+															
+															<td>{{LaporanEvaluasiController::cekFakultas($data->id_fakultas) }}</td>
+															<?php 
+																$id = DB::table('tb_jenis_indikator')
+																	->select('id_jenis_indikator')
+																	->get();
+																	foreach ($id as $id) {
+															?>
+																<td>{{LaporanEvaluasiController::cekData($data->nip, $id->id_jenis_indikator) }}</td>
+															<?php 
+																}
+															?>
+														</tr>
+													<?php
+												$no++; 
+												} 
 											?>
 										</tbody>
 									</table>
 								<?php
 							}
-							elseif (!empty($_GET['fakultas']) && !empty($_GET['prodi']) && !empty($_GET['dosen']) && !empty($_GET['matkul']))
+							elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi'])) && !empty($_GET['dosen']) && !empty($_GET['matkul']))
 							{
 								?>
 									<table id="table-laporan-per-jenis" class="table table-bordered table-striped table-responsive table-hover">
@@ -323,47 +304,32 @@
 											</tr>
 										</thead>
 										<tbody>
-											<?php
-												foreach ($data as $data) {
-												?>
-													<tr>
-														<td>
-															{{ $no }}
-														</td>
-														<td>
-															{{ $data->id_fakultas }}
-														</td>
-														<td>
-															{{ $data->id_prodi }}
-														</td>
-														<td>
-															{{ $data->nip }}
-														</td>
-														<td>
-															{{ $data->id_matkul }}
-														</td>
-														<td>
-															{{ $data->nm_jenis_indikator }}
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->totalnilai }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->jumlahreview }}
-															</label>
-														</td>
-														<td>
-															<label for="" class="label label-info" style="font-size:12px;">
-																{{ $data->rata }}
-															</label>
-														</td>
-													</tr>	
 											<?php 
-												$no++;
-												}
+												$no =1;
+												foreach($data_matkul as $data)
+												{
+													?>	
+														<tr>
+															<td>{{ $no }}</td>
+															<td>{{ $data->nip }}</td>
+															<td>{{LaporanEvaluasiController::cekNip($data->nip) }}</td>
+															<td>{{LaporanEvaluasiController::cekProdi($data->id_prodi) }}</td>
+															
+															<td>{{LaporanEvaluasiController::cekFakultas($data->id_fakultas) }}</td>
+															<?php 
+																$id = DB::table('tb_jenis_indikator')
+																	->select('id_jenis_indikator')
+																	->get();
+																	foreach ($id as $id) {
+															?>
+																<td>{{LaporanEvaluasiController::cekData($data->nip, $id->id_jenis_indikator) }}</td>
+															<?php 
+																}
+															?>
+														</tr>
+													<?php
+												$no++; 
+												} 
 											?>
 										</tbody>
 									</table>

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Client;
 use Session;
+use Auth;
 use Carbon\Carbon;
 use DB;
 
@@ -63,6 +64,7 @@ class LoginController extends Controller
               mhsNiu
               mhsNama
               mhsProdiKode
+              foto
               prodi {
                 prodiKode
                 prodiNamaResmi
@@ -114,8 +116,10 @@ class LoginController extends Controller
                 $sem = substr($mahasiswa['mahasiswa'][0]['krs'][0]['kelas'][0]['klsSemId'],-1);
                 // $a = ($mahasiswa['mahasiswa'][0]['prodi']['fakultas']['fakKodeUniv']);
                 // dd($a);
+                // dd($mahasiswa['mahasiswa'][0]['foto']);
                 // dd($sem);
                 // dd($tahun);
+                Session::put('foto',$mahasiswa['mahasiswa'][0]['foto']);
     			Session::put('akses_mahasiswa','Mahasiswa');
     			Session::put('nama',$mahasiswa['mahasiswa'][0]['mhsNama']);
                 Session::put('nip',$mahasiswa['mahasiswa'][0]['mhsNiu']);
@@ -149,8 +153,66 @@ class LoginController extends Controller
     			echo "<script>alert('akses tidak diizinkan');</script>";
     		}
     	}else{
-            session()->flash('notif','Username & Password Salah !!');
-    		return redirect()->route('sievaluasi.loginform');
+            if(Auth::attempt(array('username'   =>  $username, 'password'  =>  $password)))
+            {
+                if(Auth::guard()->user()->level =='prodi')
+                {
+                    $data_prodi = '
+                        {prodi(prodiKode:'.Auth::guard()->user()->kode_pimpinan.') {
+                          prodiKode
+                          prodiNamaResmi
+                          prodiFakKode
+                          prodiKodeUniv
+                          prodiJjarKode
+                          prodiSahrKode
+                          fakultas {
+                            fakNamaResmi
+                          }
+                        }}
+                    ';
+                    $data = $this->panda($data_prodi);
+                    // dd(Auth::guard()->user()->kode_pimpinan);
+                    // dd($data['prodi'][0]['fakultas']['fakNamaResmi']);
+                    // dd($data['prodi'][0]['prodiKode']);
+                    // dd($data);
+                    Session::put('nama',$data['prodi'][0]['prodiNamaResmi']);
+                    Session::put('kode_prodi',$data['prodi'][0]['prodiKode']);
+                    Session::put('fak_prodi',$data['prodi'][0]['fakultas']['fakNamaResmi']);
+                    Session::put('login',TRUE);
+                    return redirect()->route('prodi.dashboard');
+                }
+                elseif(Auth::guard()->user()->level =='fakultas')
+                {
+                    $data_fakultas = '
+                        {fakultas(fakKode:'.Auth::guard()->user()->kode_pimpinan.') {
+                          fakKode
+                          fakKodeUniv
+                          fakNamaResmi
+                        }}
+                    ';
+                    $data = $this->panda($data_fakultas);
+                    // dd($data);
+                    // dd(Auth::guard()->user()->kode_pimpinan);
+                    // dd($data['prodi'][0]['fakultas']['fakNamaResmi']);
+                    // dd($data['prodi'][0]['prodiKode']);
+                    // dd($data);
+                    Session::put('nama',$data['fakultas'][0]['fakNamaResmi']);
+                    Session::put('kode_fak',$data['fakultas'][0]['fakKode']);
+                    Session::put('login',TRUE);
+                    return redirect()->route('fakultas.dashboard');
+                }
+                else
+                {
+                    session()->flash('notif','Username & Password Salah !!');
+                    return redirect()->route('sievaluasi.loginform');       
+                }
+            }
+            else
+            {
+                session()->flash('notif','Username & Password Salah !!');
+                return redirect()->route('sievaluasi.loginform');
+                            
+            }
     	}
     	// print_r($data);
     }
@@ -343,13 +405,7 @@ class LoginController extends Controller
     //     }
     // }
 
-    public function logoutMahasiswa()
-    {
-        Session::flush();
-        return redirect()->route('sievaluasi.loginform');
-    }
-
-    public function logoutDosen()
+    public function logout()
     {
         Session::flush();
         return redirect()->route('sievaluasi.loginform');

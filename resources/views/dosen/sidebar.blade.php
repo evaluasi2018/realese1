@@ -38,13 +38,13 @@
           </a>
         </li>
 
-        <li class="{{set_active(['dosen.daftar_matkul','api.hasil_evaluasi_detail'])}}">
+        <li class="{{set_active(['dosen.daftar_matkul','dosen.hasil_evaluasi_detail'])}}">
           <a href="{{ route('dosen.daftar_matkul',[Session::get('nip'),Session::get('klsSemId')]) }}"><i class="fa fa-book"></i> <span>Daftar Mata Kuliah</span>
           </a>
         </li>
 
 
-        <li class="treeview {{ set_active(['dosen.hasil_evaluasi','dosen.hasil_evaluasi_per_jenis','dosen.hasil_evaluasi_per_mata_kuliah','dosen.api_hasil_evaluasi_per_mata_kuliah','dosen.saran_mahasiswa']) }}">
+        {{-- <li class="treeview {{ set_active(['dosen.hasil_evaluasi','dosen.hasil_evaluasi_per_jenis','dosen.hasil_evaluasi_per_mata_kuliah','dosen.api_hasil_evaluasi_per_mata_kuliah','dosen.saran_mahasiswa']) }}">
           <a href="#"><i class="fa fa-tasks"></i> <span>Hasil Evaluasi</span>
             <span class="pull-right-container">
                 <i class="fa fa-angle-left pull-right"></i>
@@ -55,7 +55,7 @@
             <li class="{{ set_active('dosen.hasil_evaluasi_per_jenis') }}"><a href="{{route('dosen.hasil_evaluasi_per_jenis')}}"><i class="fa fa-tasks"></i>Hasil Evaluasi Per Jenis Indikator</a></li>
             <li class="{{ set_active(['dosen.hasil_evaluasi_per_mata_kuliah','dosen.api_hasil_evaluasi_per_mata_kuliah']) }}"><a href="{{route('dosen.hasil_evaluasi_per_mata_kuliah')}}"><i class="fa fa-tasks"></i>Hasil Evaluasi Per Mata Kuliah</a></li>
           </ul>
-        </li>
+        </li> --}}
       </ul>
       <!-- /.sidebar-menu -->
     </section>

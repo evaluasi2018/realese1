@@ -49,4 +49,8 @@
   });
 </script>
 
- 
+<script>
+  $(document).ready( function () {
+      $('#table-hasil-evaluasi-detail').DataTable();
+  } );
+</script>

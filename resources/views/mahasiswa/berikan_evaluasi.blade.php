@@ -18,8 +18,8 @@
       <input type="hidden" name="jumlah" value="<?php  $hitung = DB::table('tb_indikator_penilaian')->count(); echo $hitung ?>">
       <input type="hidden" name="npm" value="<?php echo Session::get('nip') ?>"> 
       <input type="hidden" name="id_kelas" value="{{ $data['data']['kelas'][0]['klsId'] }}"> 
-      <input type="hidden" name="id_prodi" value="{{ Session::get('kode_prodi') }}"> 
-      <input type="hidden" name="id_fakultas" value="{{ Session::get('kode_fakultas') }}"> 
+      <input type="hidden" name="id_prodi" value="{{ $data['prodi'] }}"> 
+      <input type="hidden" name="id_fakultas" value="{{ $data['fakultas'] }}"> 
 
       <div class="col-md-6">
 

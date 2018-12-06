@@ -36,7 +36,8 @@
             <!-- Menu Toggle Button -->
             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
               <!-- The user image in the navbar-->
-              <img src="{{asset('bower_components/admin-lte/dist/img/user2-160x160.jpg') }}" class="user-image" alt="User Image">
+              <img src="{{ asset('bower_components/admin-lte/dist/img/user2-160x160.jpg') }}" class="user-image" alt="User Image">
+              
               <!-- hidden-xs hides the username on small devices so only the image appears. -->
               <span class="hidden-xs" style="text-transform: uppercase;">
                 @if (Auth::guard('admin')->check())
@@ -45,14 +46,16 @@
                     {{ Session::get('nama') }}
                     @elseif(Session::get('akses','Dosen'))
                       {{ Session::get('nama') }}
+                      @elseif(Session::get('akses','Prodi'))
+                        {{ Session::get('nama') }}
                   @endif
               </span>
             </a>
             <ul class="dropdown-menu">
               <!-- The user image in the menu -->
               <li class="user-header bg-blue">
-                <img src="{{asset('bower_components/admin-lte/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
-
+                <img src="{{ asset('bower_components/admin-lte/dist/img/user2-160x160.jpg') }}" class="img-circle" alt="User Image">
+                      
                 <p style="text-transform: uppercase;">
                     @if (Auth::guard('admin')->check())
                       {{ Auth::guard('admin')->user()->nm_admin }}
@@ -83,13 +86,7 @@
                     @endif
                 </div>
                 <div class="pull-right">
-                    @if (Auth::guard('admin')->check())
-                      <a href="{{ route('admin.logout') }}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i>&nbsp;Sign out</a>
-                      @elseif(Session::get('akses','Mahasiswa '))
-                      <a href="{{ route('mahasiswa.logout') }}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i>&nbsp;Sign out</a>
-                      @elseif(Session::get('akses','Dosen'))
-                      <a href="{{ route('dosen.logout') }}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i>&nbsp;Sign out</a>
-                    @endif
+                      <a href="{{ route('logout') }}" class="btn btn-danger btn-flat"><i class="fa fa-sign-out"></i>&nbsp;Sign out</a>
                 </div>
               </li>
             </ul>

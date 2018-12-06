@@ -187,33 +187,33 @@ class LaporanEvaluasiController extends Controller
           return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data_fakultas','jenis'));
         }
         elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi']) && empty($_GET['dosen']))) {
-           $data = DB::table('tb_evaluasi')
+           $data_prodi = DB::table('tb_evaluasi')
                   ->join('tb_indikator_penilaian','tb_indikator_penilaian.id_indikator','tb_evaluasi.id_indikator')
                   ->join('tb_jenis_indikator','tb_jenis_indikator.id_jenis_indikator','tb_indikator_penilaian.id_jenis_indikator')
-                  ->select('tb_jenis_indikator.nm_jenis_indikator','tb_evaluasi.id_prodi','tb_evaluasi.id_fakultas',DB::raw('SUM(nilai) as totalnilai'),DB::raw('count(npm) as jumlahreview'),DB::raw('SUM(nilai)/count(npm) as rata'))
+                  ->select('id_prodi','id_fakultas','tb_jenis_indikator.nm_jenis_indikator','nip',DB::raw('SUM(nilai)/count(npm) as rata'))
                   ->where('tb_evaluasi.id_fakultas',$_GET['fakultas'])
                   ->where('tb_evaluasi.id_prodi',$_GET['prodi'])
-                  ->groupBy('tb_jenis_indikator.nm_jenis_indikator')
+                  ->groupBy('tb_evaluasi.nip')
                   ->get();
           // return response()->json($data);
-          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data'));
+          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data_prodi','jenis'));
         }
         elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi']) && !empty($_GET['dosen']) && empty($_GET['matkul']) )) {
-          $data = DB::table('tb_evaluasi')
+          $data_dosen = DB::table('tb_evaluasi')
                   ->join('tb_indikator_penilaian','tb_indikator_penilaian.id_indikator','tb_evaluasi.id_indikator')
                   ->join('tb_jenis_indikator','tb_jenis_indikator.id_jenis_indikator','tb_indikator_penilaian.id_jenis_indikator')
-                  ->select('tb_jenis_indikator.nm_jenis_indikator','tb_evaluasi.id_prodi','tb_evaluasi.id_fakultas',DB::raw('SUM(nilai) as totalnilai'),DB::raw('count(npm) as jumlahreview'),DB::raw('SUM(nilai)/count(npm) as rata'),'tb_evaluasi.nip')
+                  ->select('id_prodi','id_fakultas','tb_jenis_indikator.nm_jenis_indikator','nip',DB::raw('SUM(nilai)/count(npm) as rata'))
                   ->where('tb_evaluasi.id_fakultas',$_GET['fakultas'])
                   ->where('tb_evaluasi.id_prodi',$_GET['prodi'])
                   ->where('tb_evaluasi.nip',$_GET['dosen'])
-                  ->groupBy('tb_jenis_indikator.nm_jenis_indikator')
+                  ->groupBy('tb_evaluasi.nip')
                   ->get();
           // return response()->json($data);
-          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data'));
+          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data_dosen','jenis'));
         }
 
         elseif (!empty($_GET['fakultas'] && !empty($_GET['prodi']) && !empty($_GET['dosen']) && !empty($_GET['matkul']) )) {
-          $data = DB::table('tb_evaluasi')
+          $data_matkul = DB::table('tb_evaluasi')
                   ->join('tb_indikator_penilaian','tb_indikator_penilaian.id_indikator','tb_evaluasi.id_indikator')
                   ->join('tb_jenis_indikator','tb_jenis_indikator.id_jenis_indikator','tb_indikator_penilaian.id_jenis_indikator')
                   ->select('tb_jenis_indikator.nm_jenis_indikator','tb_evaluasi.id_prodi','tb_evaluasi.id_fakultas',DB::raw('SUM(nilai) as totalnilai'),DB::raw('count(npm) as jumlahreview'),DB::raw('SUM(nilai)/count(npm) as rata'),'tb_evaluasi.nip','tb_evaluasi.id_matkul')
@@ -221,10 +221,10 @@ class LaporanEvaluasiController extends Controller
                   ->where('tb_evaluasi.id_prodi',$_GET['prodi'])
                   ->where('tb_evaluasi.nip',$_GET['dosen'])
                   ->where('tb_evaluasi.id_matkul',$_GET['matkul'])
-                  ->groupBy('tb_jenis_indikator.nm_jenis_indikator')
+                  ->groupBy('tb_evaluasi.nip')
                   ->get();
-          // return response()->json($data);
-          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data'));
+          // return response()->json($data_matkul);
+          return view('admin/laporan_evaluasi.laporan_per_jenis',compact('data_matkul','jenis'));
         }
       }
     }
@@ -241,6 +241,55 @@ class LaporanEvaluasiController extends Controller
         //return response()->json($data_id);
         return $data_id[0]->rata;
     }
+
+    public static function cekNip($nip)
+    {
+      $panda = new LoginController();
+      $cek = '
+        {dosen(dsnPegNip:'.$nip.') {
+          dsnPegNip
+          pegawai {
+            pegNip
+            pegNama
+          }
+        }}
+      ';
+
+      $nip = $panda->panda($cek);
+
+      return $nip['dosen'][0]['pegawai']['pegNama'];
+    }
+
+    public static function cekProdi($id_prodi)
+    {
+      $panda = new LoginController();
+      $cek = '
+        {prodi(prodiKode:'.$id_prodi.') {
+          prodiKode
+          prodiNamaResmi
+        }}
+      ';
+
+      $prodi = $panda->panda($cek);
+
+      return $prodi['prodi'][0]['prodiNamaResmi'];
+    }
+
+    public static function cekFakultas($id_fakultas)
+    {
+      $panda = new LoginController();
+      $cek = '
+        {fakultas(fakKode:'.$id_fakultas.') {
+          fakKode
+          fakNamaResmi
+        }}
+      ';
+
+      $fakultas = $panda->panda($cek);
+
+      return $fakultas['fakultas'][0]['fakNamaResmi'];
+    }
+
 
     public function laporanPerIndikator()
     {

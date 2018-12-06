@@ -50,6 +50,11 @@
 @include('layouts/partials/dosen/lihat_laporan_per_matkul_js')
 <!--End of Dosen -->
 
+<!-- Prodi -->
+@include('layouts/partials/ajax/pimpinan/pimpinan_prodi_js')
+<!--End of Prodi -->
+
+
 <!-- Javascript Laporan Per Dosen -->
 @include('layouts/partials/admin/laporan_per_dosen_js')
 <!-- End of javascript laporan per dosen -->

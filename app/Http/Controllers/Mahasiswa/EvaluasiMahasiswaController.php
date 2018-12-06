@@ -42,6 +42,14 @@ class EvaluasiMahasiswaController extends Controller
                           pegTanggalLahir
                           pegGolrKodePns
                         }
+                        prodi {
+                          prodiKode
+                          prodiNamaResmi
+                          fakultas {
+                            fakKode
+                            fakNamaResmi
+                          }
+                        }
                       }
                       matakuliah {
                         mkkurKode
@@ -57,6 +65,9 @@ class EvaluasiMahasiswaController extends Controller
                     }
                     $nama = $arr['pegawai']['pegNama'];
                     $nip = $arr['pegawai']['pegNip'];
+                    $prodi = $arr['prodi']['prodiKode'];
+                    $fakultas = $arr['prodi']['fakultas']['fakKode'];
+                    // dd($fakultas);
                 }
                 // dd($matkul);
                 $data = array(
@@ -64,6 +75,8 @@ class EvaluasiMahasiswaController extends Controller
                     'data'      => $matkul,
                     'nama'      => $nama,
                     'nip'      => $nip,
+                    'prodi'     => $prodi,
+                    'fakultas'     => $fakultas,
                     'isi'       => 'mahasiswa/daftar_matkul'
                 );
                 // dd($data);
